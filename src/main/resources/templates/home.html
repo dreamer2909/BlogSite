@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{sharedLayout.html}">
+<head>
+</head>
+<body>
+<section layout:fragment="body">
+    <div th:replace="fragments/header :: header"></div>
+    <div th:replace="fragments/header :: submenu"></div>
+    <div th:replace="fragments/content :: popular-posts"></div>
+<!--    <div th:replace="fragments/content :: new-posts"></div>-->
+</section>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{sharedLayout.html}">
+<head>
+</head>
+<body>
+<section layout:fragment="body">
+  <div th:replace="fragments/header :: header"></div>
+  <div class="mx-auto">
+    <div class="flex flex-col items-center pb-10">
+      <img class="w-24 h-24 mb-3 rounded-full shadow-lg" th:src="@{${user.getAvatar()}}" alt="avatar"/>
+      <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white" th:text="${user.getProfileName()}"></h5>
+      <span class="text-sm text-gray-500 dark:text-gray-400" th:text="${user.getDescription()}"></span>
+      <div th:if="${!user.getUsername().equals(#authentication.getPrincipal().getUsername())}" class="flex mt-4 space-x-3 md:mt-6">
+        <form th:if="${!isFollow}" method="post" th:action="@{/user/follow}">
+          <input type="hidden" name="username" th:value="${user.getUsername()}">
+          <input type="submit" value="Theo dõi" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+        </form>
+        <form th:unless="${!isFollow}" method="post" th:action="@{/user/unfollow}">
+          <input type="hidden" name="username" th:value="${user.getUsername()}">
+          <input type="submit" value="Hủy theo dõi" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+        </form>
+        <a th:href="@{/chat/{username}(username=${user.getUsername()})}" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-700 dark:focus:ring-gray-700">Nhắn tin</a>
+      </div>
+      <div th:unless="${!user.getUsername().equals(#authentication.getPrincipal().getUsername())}">
+        <a th:text="|${user.getFollowers().size()} followes|" href="#" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-700 dark:focus:ring-gray-700"></a>
+        <a th:text="|${user.getFollowing().size()} following|" href="#" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-700 dark:focus:ring-gray-700"></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="mb-4 border-b border-gray-200 dark:border-gray-700">
+    <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="myTab" data-tabs-toggle="#myTabContent" role="tablist">
+      <li class="mr-2" role="presentation">
+        <button class="inline-block p-4 rounded-t-lg border-b-2" id="info-tab" data-tabs-target="#info" type="button" role="tab" aria-controls="info" aria-selected="false">Thông tin</button>
+      </li>
+      <li class="mr-2" role="presentation">
+        <button class="inline-block p-4 rounded-t-lg border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="posts-tab" data-tabs-target="#posts" type="button" role="tab" aria-controls="posts" aria-selected="false">Bài viết</button>
+      </li>
+      <li class="mr-2" role="presentation">
+        <button class="inline-block p-4 rounded-t-lg border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="following-tab" data-tabs-target="#following" type="button" role="tab" aria-controls="following" aria-selected="false">Đang theo dõi</button>
+      </li>
+      <li role="presentation">
+        <button class="inline-block p-4 rounded-t-lg border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="followers-tab" data-tabs-target="#followers" type="button" role="tab" aria-controls="followers" aria-selected="false">Người theo dõi</button>
+      </li>
+    </ul>
+  </div>
+  <div id="myTabContent">
+    <div class="hidden p-4 bg-gray-50 rounded-lg dark:bg-gray-800" id="info" role="tabpanel" aria-labelledby="info-tab">
+      <dl class="max-w-md text-gray-900 divide-y divide-gray-200 dark:text-white dark:divide-gray-700">
+        <div class="flex flex-col pb-3">
+          <dt class="mb-1 text-gray-500 md:text-lg dark:text-gray-400">Địa chỉ</dt>
+          <dd class="text-lg font-semibold" th:text="${user.getLocation()}"></dd>
+        </div>
+        <div class="flex flex-col py-3">
+          <dt class="mb-1 text-gray-500 md:text-lg dark:text-gray-400">Công việc</dt>
+          <dd class="text-lg font-semibold" th:text="${user.getJob()}"></dd>
+        </div>
+        <div class="flex flex-col pt-3">
+          <dt class="mb-1 text-gray-500 md:text-lg dark:text-gray-400">Học vấn</dt>
+          <dd class="text-lg font-semibold" th:text="${user.getEducation()}"></dd>
+        </div>
+        <div class="flex flex-col pt-3">
+          <dt class="mb-1 text-gray-500 md:text-lg dark:text-gray-400">Quê quán</dt>
+          <dd class="text-lg font-semibold" th:text="${user.getHometown()}"></dd>
+        </div>
+      </dl>
+    </div>
+    <div class="hidden p-4 bg-gray-50 rounded-lg dark:bg-gray-800" id="posts" role="tabpanel" aria-labelledby="posts-tab">
+      <div class="grid gap-8 lg:grid-cols-4">
+        <div th:each="post: ${posts}" class="max-w-sm bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700">
+          <div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700">
+            <a th:href="@{/post/{title}(title=${post.uniqueTitle})}">
+              <img class="rounded-t-lg" th:src="@{${post.getImageUrl()}}" alt="" />
+            </a>
+            <div class="flex justify-between items-center px-3 mt-2 text-gray-500">
+          <span th:text="${post.getCategory().getTitle()}" class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-200 dark:text-primary-800">
+            Tutorial
+          </span>
+              <span th:text="${post.getTimeAgo()}" class="bg-blue-100 text-blue-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800">
+            <svg aria-hidden="true" class="mr-1 w-3 h-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path></svg>
+          </span>
+            </div>
+            <div class="p-5">
+              <a th:href="@{/post/{title}(title=${post.uniqueTitle})}">
+                <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white" th:text="${post.getTitle()}"></h5>
+              </a>
+              <p class="mb-3 font-normal text-gray-700 dark:text-gray-400" th:text="${post.getSummary()}"></p>
+              <div class="flex items-center space-x-4">
+                <img class="w-7 h-7 rounded-full" th:src="@{${post.getUser().getAvatar}}" alt="avatar" />
+                <span th:text="${post.getUser().getProfileName()}" class="font-medium dark:text-white"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="hidden p-4 bg-gray-50 rounded-lg dark:bg-gray-800" id="following" role="tabpanel" aria-labelledby="following-tab">
+      <ul class="max-w-md divide-y divide-gray-200 dark:divide-gray-700">
+        <li th:each="follow: ${following}" class="pb-3 sm:pb-4">
+          <div class="flex items-center space-x-4">
+            <div class="flex-shrink-0">
+              <img class="w-8 h-8 rounded-full" th:src="@{${follow.getAvatar()}}" alt="avatar">
+            </div>
+            <div class="flex-1 min-w-0">
+              <p th:text="${follow.getProfileName()}" class="text-sm font-medium text-gray-900 truncate dark:text-white"></p>
+              <p th:text="${follow.getUsername()}" class="text-sm text-gray-500 truncate dark:text-gray-400"></p>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="hidden p-4 bg-gray-50 rounded-lg dark:bg-gray-800" id="followers" role="tabpanel" aria-labelledby="followers-tab">
+      <ul class="max-w-md divide-y divide-gray-200 dark:divide-gray-700">
+        <li th:each="follower: ${followers}" class="pb-3 sm:pb-4">
+          <div class="flex items-center space-x-4">
+            <div class="flex-shrink-0">
+              <img class="w-8 h-8 rounded-full" th:src="@{${follower.getAvatar()}}" alt="avatar">
+            </div>
+            <div class="flex-1 min-w-0">
+              <p th:text="${follower.getProfileName()}" class="text-sm font-medium text-gray-900 truncate dark:text-white"></p>
+              <p th:text="${follower.getUsername()}" class="text-sm text-gray-500 truncate dark:text-gray-400"></p>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+</section>
+</body>
+</html>
