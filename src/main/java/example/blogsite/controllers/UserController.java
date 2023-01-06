@@ -28,7 +28,7 @@ public class UserController {
         this.postService = postService;
     }
 
-    @GetMapping("/{username}")
+    @GetMapping("/_{username}")
     public String profile(@PathVariable String username, Model model) {
         User user = userService.getUserByUsername(username);
         model.addAttribute("user", user);

@@ -23,7 +23,7 @@
                         <div class="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white">
                             <img class="mr-4 w-10 h-10 rounded-full" th:src="@{${post.getUser().getAvatar()}}" alt="avatar">
                             <div>
-                                <a th:href="@{/user/{username}(username=${post.getUser().getUsername()})}" rel="author" class="text-xl font-bold text-gray-900 dark:text-white" th:text="${post.getUser().getProfileName()}"></a>
+                                <a th:href="@{/user/{username}(username='_' + ${post.getUser().getUsername()})}" rel="author" class="text-xl font-bold text-gray-900 dark:text-white" th:text="${post.getUser().getProfileName()}"></a>
                                 <p class="text-base font-light text-gray-500 dark:text-gray-400"><span th:text="${post.getTimeAgo()}"></span></p>
                             </div>
                         </div>

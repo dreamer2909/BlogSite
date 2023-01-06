@@ -7,6 +7,7 @@ import example.blogsite.services.IChatService;
 import example.blogsite.services.IUserService;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +19,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/chat")
+@PreAuthorize("hasRole('USER')")
 public class ChatController {
     private final IChatService chatService;
     private final IUserService userService;
@@ -31,6 +33,8 @@ public class ChatController {
     public String chat(@PathVariable String username, Model model) {
         User userA = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User userB = userService.getUserByUsername(username);
+
+        if (userA.getUsername().equals(username)) return "redirect:/";
 
         Chat chat = chatService.getById(userA.getId(), userB.getId());
 

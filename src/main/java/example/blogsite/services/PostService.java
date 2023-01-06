@@ -76,7 +76,7 @@ public class PostService implements IPostService {
     }
 
     public List<Post> getFoundPosts(String keyword) {
-        String upperCaseKeyword = VNCharacterUtils.removeAccent(keyword.toLowerCase().trim());
+        String upperCaseKeyword = VNCharacterUtils.removeAccent(keyword.toUpperCase().trim());
         return postRepository.findAll()
                 .stream()
                 .filter(post -> post.getTitle().toUpperCase().contains(upperCaseKeyword)
